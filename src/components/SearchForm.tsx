@@ -22,20 +22,20 @@ const SearchForm = () => {
 
   return (
     <div className="space-y-5">
-      <h3 className="text-xl font-semibold text-white mb-2">Find Your Perfect Yacht</h3>
+      <h3 className="text-xl font-semibold text-white mb-2">Encuentra Tu Yate Perfecto</h3>
       
       <div className="space-y-4">
         <div>
-          <Label htmlFor="name" className="text-white mb-1.5 block">Your Name</Label>
+          <Label htmlFor="name" className="text-white mb-1.5 block">Tu Nombre</Label>
           <Input 
             id="name" 
-            placeholder="John Doe" 
+            placeholder="Juan Pérez" 
             className="bg-white/20 border-white/20 text-white placeholder:text-white/50 focus:border-white/50" 
           />
         </div>
         
         <div>
-          <Label htmlFor="date" className="text-white mb-1.5 block">Date</Label>
+          <Label htmlFor="date" className="text-white mb-1.5 block">Fecha</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -47,7 +47,7 @@ const SearchForm = () => {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Select a date</span>}
+                {date ? format(date, "PPP") : <span>Selecciona una fecha</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
@@ -63,19 +63,19 @@ const SearchForm = () => {
         </div>
         
         <div>
-          <Label htmlFor="guests" className="text-white mb-1.5 block">Number of Passengers</Label>
+          <Label htmlFor="guests" className="text-white mb-1.5 block">Número de Pasajeros</Label>
           <div className="relative">
             <Select>
               <SelectTrigger id="guests" className="w-full bg-white/20 border-white/20 text-white focus:ring-0 focus:ring-offset-0">
-                <SelectValue placeholder="Select guests" />
+                <SelectValue placeholder="Seleccionar pasajeros" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="1-2">1-2 Passengers</SelectItem>
-                  <SelectItem value="3-4">3-4 Passengers</SelectItem>
-                  <SelectItem value="5-8">5-8 Passengers</SelectItem>
-                  <SelectItem value="9-12">9-12 Passengers</SelectItem>
-                  <SelectItem value="13+">13+ Passengers</SelectItem>
+                  <SelectItem value="1-2">1-2 Pasajeros</SelectItem>
+                  <SelectItem value="3-4">3-4 Pasajeros</SelectItem>
+                  <SelectItem value="5-8">5-8 Pasajeros</SelectItem>
+                  <SelectItem value="9-12">9-12 Pasajeros</SelectItem>
+                  <SelectItem value="13+">13+ Pasajeros</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -86,25 +86,25 @@ const SearchForm = () => {
         </div>
         
         <div>
-          <Label htmlFor="type" className="text-white mb-1.5 block">Type of Yacht</Label>
+          <Label htmlFor="type" className="text-white mb-1.5 block">Tipo de Yate</Label>
           <Select>
             <SelectTrigger id="type" className="w-full bg-white/20 border-white/20 text-white focus:ring-0 focus:ring-offset-0">
-              <SelectValue placeholder="Select type" />
+              <SelectValue placeholder="Seleccionar tipo" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="sail">Sailing Yacht</SelectItem>
-                <SelectItem value="motor">Motor Yacht</SelectItem>
-                <SelectItem value="catamaran">Catamaran</SelectItem>
-                <SelectItem value="luxury">Luxury Yacht</SelectItem>
-                <SelectItem value="mega">Mega Yacht</SelectItem>
+                <SelectItem value="sail">Yate de Vela</SelectItem>
+                <SelectItem value="motor">Yate a Motor</SelectItem>
+                <SelectItem value="catamaran">Catamarán</SelectItem>
+                <SelectItem value="luxury">Yate de Lujo</SelectItem>
+                <SelectItem value="mega">Mega Yate</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
         
         <Button className="w-full bg-gold hover:bg-gold/90 text-navy-dark" size="lg">
-          Search
+          Buscar
         </Button>
       </div>
     </div>

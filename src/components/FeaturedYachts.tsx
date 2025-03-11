@@ -8,7 +8,7 @@ const featuredYachts: Yacht[] = [
   {
     id: '1',
     name: 'Serenity Sail',
-    category: 'Sailing Yacht',
+    category: 'Yate de Vela',
     image: 'https://images.unsplash.com/photo-1599772335946-23f8573a49c3?q=80&w=1000',
     rating: 4.8,
     reviews: 12,
@@ -20,7 +20,7 @@ const featuredYachts: Yacht[] = [
   {
     id: '2',
     name: 'Ocean Explorer',
-    category: 'Catamaran',
+    category: 'Catamarán',
     image: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=1000',
     rating: 4.9,
     reviews: 31,
@@ -32,7 +32,7 @@ const featuredYachts: Yacht[] = [
   {
     id: '3',
     name: 'Velocity',
-    category: 'Power Yacht',
+    category: 'Yate a Motor',
     image: 'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?q=80&w=1000',
     rating: 4.7,
     reviews: 25,
@@ -44,7 +44,7 @@ const featuredYachts: Yacht[] = [
   {
     id: '4',
     name: 'Luxury Wave',
-    category: 'Mega Yacht',
+    category: 'Mega Yate',
     image: 'https://images.unsplash.com/photo-1621406775527-76ace47159ce?q=80&w=1000',
     rating: 4.9,
     reviews: 19,
@@ -67,10 +67,10 @@ const FeaturedYachts = () => {
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div className="space-y-3 mb-6 md:mb-0">
-            <span className="inline-block text-sm font-medium text-blue-600">Our Collection</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-navy-dark">Featured Yachts</h2>
+            <span className="inline-block text-sm font-medium text-blue-600">Nuestra Colección</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-navy-dark">Yates Destacados</h2>
             <p className="text-gray-600 max-w-lg">
-              Select from our premium fleet of meticulously maintained yachts for an unforgettable experience on the water.
+              Selecciona entre nuestra flota premium de yates meticulosamente mantenidos para una experiencia inolvidable en el agua.
             </p>
           </div>
           
@@ -81,23 +81,23 @@ const FeaturedYachts = () => {
               onClick={() => setFilter('all')}
               className="whitespace-nowrap"
             >
-              All Types
+              Todos los Tipos
             </Button>
             <Button
-              variant={filter === 'sailing' ? 'default' : 'outline'}
+              variant={filter === 'vela' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setFilter('sailing')}
+              onClick={() => setFilter('vela')}
               className="whitespace-nowrap"
             >
-              Sailing
+              Vela
             </Button>
             <Button
-              variant={filter === 'power' ? 'default' : 'outline'}
+              variant={filter === 'motor' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setFilter('power')}
+              onClick={() => setFilter('motor')}
               className="whitespace-nowrap"
             >
-              Power
+              Motor
             </Button>
             <Button
               variant={filter === 'catamaran' ? 'default' : 'outline'}
@@ -105,7 +105,7 @@ const FeaturedYachts = () => {
               onClick={() => setFilter('catamaran')}
               className="whitespace-nowrap"
             >
-              Catamaran
+              Catamarán
             </Button>
             <Button
               variant={filter === 'mega' ? 'default' : 'outline'}
@@ -129,7 +129,7 @@ const FeaturedYachts = () => {
             variant="outline"
             className="border-navy-dark text-navy-dark hover:bg-navy-dark hover:text-white"
           >
-            View All Yachts
+            Ver Todos los Yates
           </Button>
         </div>
       </div>

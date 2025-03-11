@@ -6,26 +6,26 @@ import { Ship, Calendar, Settings, CheckCircle } from 'lucide-react';
 const steps: BookingStep[] = [
   {
     id: 1,
-    title: 'Select your Yacht',
-    description: 'Explore our elite fleet and select the yacht that matches your needs based on size, amenities, and preferences.',
+    title: 'Selecciona tu Yate',
+    description: 'Explora nuestra flota de élite y selecciona el yate que mejor se adapte a tus necesidades según tamaño, comodidades y preferencias.',
     icon: 'Ship'
   },
   {
     id: 2,
-    title: 'Choose your Dates',
-    description: 'Select your preferred dates for the charter and confirm availability for your chosen yacht.',
+    title: 'Elige tus Fechas',
+    description: 'Selecciona tus fechas preferidas para el chárter y confirma la disponibilidad de tu yate elegido.',
     icon: 'Calendar'
   },
   {
     id: 3,
-    title: 'Personalize your Trip',
-    description: 'Customize your journey with meal preferences, activities, destinations, and additional services.',
+    title: 'Personaliza tu Viaje',
+    description: 'Personaliza tu viaje con preferencias de comidas, actividades, destinos y servicios adicionales.',
     icon: 'Settings'
   },
   {
     id: 4,
-    title: 'Confirm your Booking',
-    description: 'Complete your reservation with secure payment options and receive detailed confirmation.',
+    title: 'Confirma tu Reserva',
+    description: 'Completa tu reserva con opciones de pago seguras y recibe una confirmación detallada.',
     icon: 'CheckCircle'
   }
 ];
@@ -45,12 +45,12 @@ const BookingProcess = () => {
     <section id="booking" className="py-20 bg-gray-50">
       <div className="container mx-auto px-6 lg:px-8">
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <span className="inline-block text-sm font-medium text-blue-600">Booking Guide</span>
+          <span className="inline-block text-sm font-medium text-blue-600">Guía de Reserva</span>
           <h2 className="text-3xl md:text-4xl font-bold text-navy-dark mt-2 mb-4">
-            How to Book your Yacht Charter
+            Cómo Reservar tu Chárter de Yate
           </h2>
           <p className="text-gray-600">
-            Secure your perfect yacht experience in four simple steps.
+            Asegura tu experiencia perfecta en yate en cuatro sencillos pasos.
           </p>
         </div>
         
@@ -82,7 +82,7 @@ const BookingProcess = () => {
         
         <div className="mt-16 text-center">
           <Button size="lg" className="bg-gold hover:bg-gold/90 text-navy-dark">
-            Start Your Booking
+            Iniciar tu Reserva
           </Button>
         </div>
       </div>

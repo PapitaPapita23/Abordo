@@ -54,7 +54,7 @@ const Navbar = () => {
                 scrolled ? 'text-navy-dark hover:bg-navy-dark/10' : 'text-white hover:bg-white/10'
               )}
             >
-              Sign In
+              Iniciar Sesión
             </Button>
             
             <Button 
@@ -64,7 +64,7 @@ const Navbar = () => {
                 !scrolled && 'text-white border-white hover:bg-white/20'
               )}
             >
-              Book Now
+              Reservar Ahora
             </Button>
             
             <Button 
@@ -85,14 +85,14 @@ const Navbar = () => {
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 py-4 bg-white rounded-lg shadow-md animate-fade-in">
             <div className="flex flex-col space-y-3 px-4">
-              <a href="#" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Home</a>
-              <a href="#yachts" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Our Fleet</a>
-              <a href="#experience" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Experience</a>
-              <a href="#booking" className="py-2 text-navy-dark hover:text-navy-light transition-colors">How to Book</a>
-              <a href="#faq" className="py-2 text-navy-dark hover:text-navy-light transition-colors">FAQ</a>
+              <a href="#" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Inicio</a>
+              <a href="#yachts" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Nuestra Flota</a>
+              <a href="#experience" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Experiencia</a>
+              <a href="#booking" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Cómo Reservar</a>
+              <a href="#faq" className="py-2 text-navy-dark hover:text-navy-light transition-colors">Preguntas Frecuentes</a>
               <div className="pt-2 flex flex-col space-y-2">
-                <Button variant="ghost" className="justify-start">Sign In</Button>
-                <Button>Book Now</Button>
+                <Button variant="ghost" className="justify-start">Iniciar Sesión</Button>
+                <Button>Reservar Ahora</Button>
               </div>
             </div>
           </div>
@@ -109,31 +109,31 @@ const NavLinks = ({ scrolled }: { scrolled: boolean }) => {
         'transition-colors duration-300 hover:opacity-80',
         scrolled ? 'text-navy-dark' : 'text-white'
       )}>
-        Home
+        Inicio
       </a>
       <a href="#yachts" className={cn(
         'transition-colors duration-300 hover:opacity-80',
         scrolled ? 'text-navy-dark' : 'text-white'
       )}>
-        Our Fleet
+        Nuestra Flota
       </a>
       <a href="#experience" className={cn(
         'transition-colors duration-300 hover:opacity-80',
         scrolled ? 'text-navy-dark' : 'text-white'
       )}>
-        Experience
+        Experiencia
       </a>
       <a href="#booking" className={cn(
         'transition-colors duration-300 hover:opacity-80',
         scrolled ? 'text-navy-dark' : 'text-white'
       )}>
-        How to Book
+        Cómo Reservar
       </a>
       <a href="#faq" className={cn(
         'transition-colors duration-300 hover:opacity-80',
         scrolled ? 'text-navy-dark' : 'text-white'
       )}>
-        FAQ
+        Preguntas Frecuentes
       </a>
     </>
   );

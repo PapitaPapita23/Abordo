@@ -1,3 +1,4 @@
+
 import { FAQ as FAQType } from '@/types';
 import {
   Accordion,
@@ -10,43 +11,43 @@ import { Button } from '@/components/ui/button';
 const faqs: FAQType[] = [
   {
     id: '1',
-    question: 'What is included in the yacht charter price?',
-    answer: 'Our charter prices typically include the yacht rental, professional crew, insurance, and standard amenities. Additional costs may include fuel, provisions, dockage, taxes, gratuities, and special requests. We provide a detailed breakdown of inclusions in your personalized quote.'
+    question: '¿Qué está incluido en el precio del chárter de yate?',
+    answer: 'Nuestros precios de chárter típicamente incluyen el alquiler del yate, tripulación profesional, seguro y comodidades estándar. Los costos adicionales pueden incluir combustible, provisiones, tarifas de atraque, impuestos, propinas y solicitudes especiales. Proporcionamos un desglose detallado de las inclusiones en tu cotización personalizada.'
   },
   {
     id: '2',
-    question: 'How far in advance should I book a yacht charter?',
-    answer: 'For peak season (summer months and holidays), we recommend booking 6-12 months in advance to secure your preferred yacht and dates. For off-peak periods, 3-6 months ahead is generally sufficient, though last-minute bookings can sometimes be accommodated.'
+    question: '¿Con cuánta antelación debo reservar un chárter de yate?',
+    answer: 'Para temporada alta (meses de verano y días festivos), recomendamos reservar con 6-12 meses de antelación para asegurar tu yate y fechas preferidas. Para períodos fuera de temporada, con 3-6 meses de antelación es generalmente suficiente, aunque a veces se pueden acomodar reservas de último minuto.'
   },
   {
     id: '3',
-    question: 'Can I customize the itinerary for my yacht charter?',
-    answer: 'Absolutely! Customization is a key benefit of private yacht charters. Your captain will work with you to design an itinerary based on your preferences, while considering weather conditions, sailing distances, and recommended highlights for your chosen cruising area.'
+    question: '¿Puedo personalizar el itinerario para mi chárter de yate?',
+    answer: '¡Absolutamente! La personalización es un beneficio clave de los chárters privados de yates. Tu capitán trabajará contigo para diseñar un itinerario basado en tus preferencias, considerando las condiciones climáticas, distancias de navegación y puntos destacados recomendados para tu área de navegación elegida.'
   },
   {
     id: '4',
-    question: 'What is the cancellation policy?',
-    answer: 'Cancellation policies vary depending on the yacht and booking time. Generally, cancellations made more than 90 days prior receive a partial refund (minus deposit). Cancellations within 90 days may be non-refundable. We offer trip insurance options to protect your investment.'
+    question: '¿Cuál es la política de cancelación?',
+    answer: 'Las políticas de cancelación varían según el yate y el momento de la reserva. Generalmente, las cancelaciones realizadas con más de 90 días de antelación reciben un reembolso parcial (menos el depósito). Las cancelaciones dentro de los 90 días pueden no ser reembolsables. Ofrecemos opciones de seguro de viaje para proteger tu inversión.'
   },
   {
     id: '5',
-    question: 'Do I need sailing experience to charter a yacht?',
-    answer: 'No experience is necessary for crewed charters, as our professional captains and crew handle all aspects of navigation and yacht operation. For bareboat charters (without crew), at least one person must demonstrate sailing competency and relevant experience.'
+    question: '¿Necesito experiencia en navegación para alquilar un yate?',
+    answer: 'No se necesita experiencia para los chárters con tripulación, ya que nuestros capitanes y tripulación profesionales manejan todos los aspectos de la navegación y operación del yate. Para chárters sin tripulación, al menos una persona debe demostrar competencia en navegación y experiencia relevante.'
   },
   {
     id: '6',
-    question: 'What crew members will be on board during my charter?',
-    answer: 'Crew configurations vary by yacht size. Smaller yachts may have a captain and chef/stewardess, while larger vessels can include additional stewards/stewardesses, deckhands, engineers, and dedicated chefs. All crew members are professionally trained and certified.'
+    question: '¿Qué miembros de la tripulación estarán a bordo durante mi chárter?',
+    answer: 'Las configuraciones de la tripulación varían según el tamaño del yate. Los yates más pequeños pueden tener un capitán y un chef/azafata, mientras que los buques más grandes pueden incluir azafatas/azafatos adicionales, marineros, ingenieros y chefs dedicados. Todos los miembros de la tripulación están profesionalmente entrenados y certificados.'
   },
   {
     id: '7',
-    question: 'Can I specify dietary preferences or restrictions?',
-    answer: "Yes, we accommodate all dietary requirements. Prior to your charter, you'll complete a preference sheet detailing any allergies, restrictions, and food/beverage preferences. Our chefs will tailor all meals and provisions accordingly."
+    question: '¿Puedo especificar preferencias o restricciones dietéticas?',
+    answer: "Sí, nos adaptamos a todos los requisitos dietéticos. Antes de tu chárter, completarás una hoja de preferencias detallando alergias, restricciones y preferencias de comida/bebida. Nuestros chefs adaptarán todas las comidas y provisiones en consecuencia."
   },
   {
     id: '8',
-    question: 'What happens in case of bad weather?',
-    answer: 'Your captain continuously monitors weather conditions and will adapt the itinerary as necessary for safety and comfort. If severe weather is forecasted, we may recommend rescheduling or adjusting your charter. Most charter agreements include provisions for weather-related contingencies.'
+    question: '¿Qué sucede en caso de mal tiempo?',
+    answer: 'Tu capitán monitorea continuamente las condiciones climáticas y adaptará el itinerario según sea necesario para la seguridad y comodidad. Si se pronostica mal tiempo severo, podemos recomendar reprogramar o ajustar tu chárter. La mayoría de los acuerdos de chárter incluyen provisiones para contingencias relacionadas con el clima.'
   }
 ];
 
@@ -55,12 +56,12 @@ const FAQ = () => {
     <section id="faq" className="py-20 bg-white">
       <div className="container mx-auto px-6 lg:px-8">
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <span className="inline-block text-sm font-medium text-blue-600">Frequently Asked Questions</span>
+          <span className="inline-block text-sm font-medium text-blue-600">Preguntas Frecuentes</span>
           <h2 className="text-3xl md:text-4xl font-bold text-navy-dark mt-2 mb-4">
-            Common Questions About Our Yacht Charters
+            Preguntas Comunes Sobre Nuestros Chárters de Yates
           </h2>
           <p className="text-gray-600">
-            Find answers to common questions about our luxury yacht charter services.
+            Encuentra respuestas a preguntas comunes sobre nuestros servicios de chárter de yates de lujo.
           </p>
         </div>
         
@@ -80,9 +81,9 @@ const FAQ = () => {
         </div>
         
         <div className="mt-12 text-center">
-          <p className="text-gray-600 mb-4">Have more questions? We're here to help you plan your perfect charter experience.</p>
+          <p className="text-gray-600 mb-4">¿Tienes más preguntas? Estamos aquí para ayudarte a planificar tu experiencia perfecta de chárter.</p>
           <Button size="lg" className="bg-navy-dark hover:bg-navy-light text-white">
-            Contact Us
+            Contáctanos
           </Button>
         </div>
       </div>

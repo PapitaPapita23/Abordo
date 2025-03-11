@@ -40,15 +40,15 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
         <div className="flex justify-between items-center text-sm text-gray-500">
           <div className="flex space-x-3">
             <div>
-              <span className="block text-xs">Guests</span>
+              <span className="block text-xs">Invitados</span>
               <span className="font-medium text-navy-dark">{yacht.capacity}</span>
             </div>
             <div>
-              <span className="block text-xs">Cabins</span>
+              <span className="block text-xs">Cabinas</span>
               <span className="font-medium text-navy-dark">{yacht.cabins}</span>
             </div>
             <div>
-              <span className="block text-xs">Length</span>
+              <span className="block text-xs">Longitud</span>
               <span className="font-medium text-navy-dark">{yacht.length} ft</span>
             </div>
           </div>
@@ -56,7 +56,7 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
         
         <div className="pt-2 flex items-center justify-between border-t border-gray-100">
           <div>
-            <span className="text-xs text-gray-500">Price per day</span>
+            <span className="text-xs text-gray-500">Precio por día</span>
             <div className="flex items-baseline">
               <span className="text-xl font-bold text-navy-dark">${yacht.pricePerDay}</span>
             </div>
@@ -69,7 +69,7 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
               "bg-white text-navy-dark border border-navy-dark/20 hover:bg-navy-dark hover:text-white"
             )}
           >
-            View Details
+            Ver Detalles
           </Button>
         </div>
       </div>

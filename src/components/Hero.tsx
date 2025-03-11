@@ -20,33 +20,33 @@ const Hero = () => {
           <div className="text-white space-y-6 px-6 md:px-0">
             <div>
               <span className="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-medium mb-4 animate-fade-up">
-                Luxury Yacht Charters
+                Chárters de Yates de Lujo
               </span>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight text-shadow animate-fade-up delay-100">
-              Sail in <span className="text-gold">Luxury</span>,<br className="hidden md:block" />
-              Explore in <span className="text-gold">Style</span>
+              Navega con <span className="text-gold">Lujo</span>,<br className="hidden md:block" />
+              Explora con <span className="text-gold">Estilo</span>
             </h1>
 
             <p className="text-lg md:text-xl text-white/90 max-w-lg animate-fade-up delay-200">
-              Experience the ultimate freedom and privacy on our premium yacht charters. 
-              Discover hidden coves and pristine beaches with our world-class service.
+              Experimenta la máxima libertad y privacidad en nuestros chárters de yates premium.
+              Descubre calas escondidas y playas vírgenes con nuestro servicio de clase mundial.
             </p>
 
             <div className="flex flex-wrap gap-4 animate-fade-up delay-300">
               <Button size="lg" className="bg-gold hover:bg-gold/90 text-navy-dark font-medium">
-                Explore Our Fleet
+                Explorar Nuestra Flota
               </Button>
               <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
-                View Destinations
+                Ver Destinos
               </Button>
             </div>
           </div>
 
           <div className="hidden md:block">
             <div className="glass-effect rounded-2xl p-6 shadow-xl max-w-md mx-auto animate-fade-in delay-100">
-              <h3 className="text-white text-xl font-semibold mb-6">Find Your Perfect Yacht</h3>
+              <h3 className="text-white text-xl font-semibold mb-6">Encuentra Tu Yate Perfecto</h3>
               <SearchForm />
             </div>
           </div>
@@ -56,7 +56,7 @@ const Hero = () => {
       {/* Mobile Search Form */}
       <div className="md:hidden absolute bottom-0 left-0 right-0 px-6 pb-8 z-20">
         <div className="glass-effect rounded-2xl p-6 shadow-xl animate-fade-up">
-          <h3 className="text-white text-xl font-semibold mb-4">Find Your Perfect Yacht</h3>
+          <h3 className="text-white text-xl font-semibold mb-4">Encuentra Tu Yate Perfecto</h3>
           <SearchForm />
         </div>
       </div>
