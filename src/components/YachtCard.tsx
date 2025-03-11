@@ -1,4 +1,3 @@
-
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Yacht } from '@/types';
@@ -20,45 +19,45 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
           className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
         />
         <div className="absolute top-3 left-3 z-20">
-          <span className="inline-block py-1 px-2 bg-white/90 backdrop-blur-sm rounded text-xs font-medium text-navy-dark">
+          <span className="inline-flex h-6 px-2 items-center justify-center gap-2 rounded-full bg-white bg-opacity-90 backdrop-blur-md text-xs font-medium text-navy-dark">
             {yacht.category}
           </span>
         </div>
       </div>
       
       {/* Content */}
-      <div className="p-5 space-y-4">
+      <div className="p-5 space-y-4 font-inter">
         <div className="flex justify-between items-start">
-          <h3 className="text-lg font-semibold text-navy-dark">{yacht.name}</h3>
+          <h3 className="text-lg font-semibold text-[#152B3D]">{yacht.name}</h3>
           <div className="flex items-center">
             <Star className="h-4 w-4 fill-gold text-gold" />
-            <span className="ml-1 text-sm font-medium">{yacht.rating}</span>
-            <span className="ml-1 text-xs text-gray-500">({yacht.reviews})</span>
+            <span className="ml-1 text-sm font-medium text-[#075985] ">{yacht.rating}</span>
+            <span className="ml-1 text-xs text-[#8CB7D8]">({yacht.reviews})</span>
           </div>
         </div>
         
         <div className="flex justify-between items-center text-sm text-gray-500">
           <div className="flex space-x-3">
             <div>
-              <span className="block text-xs">Invitados</span>
-              <span className="font-medium text-navy-dark">{yacht.capacity}</span>
+              <span className="block text-xs text-[#8CB7D8]">Invitados</span>
+              <span className="font-medium text-[#8CB7D8]">{yacht.capacity}</span>
             </div>
             <div>
-              <span className="block text-xs">Cabinas</span>
-              <span className="font-medium text-navy-dark">{yacht.cabins}</span>
+              <span className="block text-xs text-[#8CB7D8]">Cabinas</span>
+              <span className="font-medium text-[#8CB7D8]">{yacht.cabins}</span>
             </div>
             <div>
-              <span className="block text-xs">Longitud</span>
-              <span className="font-medium text-navy-dark">{yacht.length} ft</span>
+              <span className="block text-xs text-[#8CB7D8]">Longitud</span>
+              <span className="font-medium text-[#8CB7D8]">{yacht.length} ft</span>
             </div>
           </div>
         </div>
         
         <div className="pt-2 flex items-center justify-between border-t border-gray-100">
           <div>
-            <span className="text-xs text-gray-500">Precio por día</span>
+            <span className="text-xs text-[#8CB7D8]">Precio por día</span>
             <div className="flex items-baseline">
-              <span className="text-xl font-bold text-navy-dark">${yacht.pricePerDay}</span>
+              <span className="text-xl font-bold text-[[#152B3D]]">${yacht.pricePerDay}</span>
             </div>
           </div>
           
@@ -66,7 +65,7 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
             size="sm" 
             className={cn(
               "transition-all duration-300",
-              "bg-white text-navy-dark border border-navy-dark/20 hover:bg-navy-dark hover:text-white"
+              "bg-[#152B3D] text-[#F5EEE7] border border-navy-dark/20 hover:bg-navy-dark hover:text-white"
             )}
           >
             Ver Detalles
@@ -78,3 +77,4 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
 };
 
 export default YachtCard;
+

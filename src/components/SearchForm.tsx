@@ -22,32 +22,32 @@ const SearchForm = () => {
 
   return (
     <div className="space-y-5">
-      <h3 className="text-xl font-semibold text-white mb-2">Encuentra Tu Yate Perfecto</h3>
+      <h3 className="text-xl font-semibold text-[#152B3D] mb-2">Encuentra Tu Yate Perfecto</h3>
       
       <div className="space-y-4">
         <div>
-          <Label htmlFor="name" className="text-white mb-1.5 block">Tu Nombre</Label>
+          <Label htmlFor="name" className="text-[#152B3D] mb-1.5 block">Tu Nombre</Label>
           <Input 
             id="name" 
             placeholder="Juan Pérez" 
-            className="bg-white/20 border-white/20 text-white placeholder:text-white/50 focus:border-white/50" 
+            className="bg-white/20 border-white/20 text-[#152B3D] placeholder:text-[#274257] focus:border-white/50" 
           />
         </div>
         
         <div>
-          <Label htmlFor="date" className="text-white mb-1.5 block">Fecha</Label>
+          <Label htmlFor="date" className="text-[#152B3D] mb-1.5 block">Fecha</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 id="date"
                 className={cn(
-                  "w-full justify-start text-left bg-white/20 border-white/20 text-white hover:bg-white/30",
+                  "w-full justify-start text-left bg-white/20 border-white/20 text-[#152B3D] hover:bg-white/30",
                   !date && "text-white/50"
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Selecciona una fecha</span>}
+                <CalendarIcon className="text-[#274257] mr-2 h-4 w-4" />
+                {date ? <span className="text-[#274257]">{format(date, "PPP")}</span> : <span className="text-[#274257]">Selecciona una fecha</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
@@ -63,10 +63,10 @@ const SearchForm = () => {
         </div>
         
         <div>
-          <Label htmlFor="guests" className="text-white mb-1.5 block">Número de Pasajeros</Label>
+          <Label htmlFor="guests" className="text-[#152B3D] mb-1.5 block">Número de Pasajeros</Label>
           <div className="relative">
             <Select>
-              <SelectTrigger id="guests" className="w-full bg-white/20 border-white/20 text-white focus:ring-0 focus:ring-offset-0">
+              <SelectTrigger id="guests" className="w-full bg-white/20 border-white/20 text-[#152B3D] focus:ring-0 focus:ring-offset-0">
                 <SelectValue placeholder="Seleccionar pasajeros" />
               </SelectTrigger>
               <SelectContent>
@@ -79,16 +79,16 @@ const SearchForm = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <div className="absolute right-10 top-1/2 transform -translate-y-1/2 text-white/50">
+            <div className="absolute right-10 top-1/2 transform -translate-y-1/2 text-[#274257]">
               <Users size={16} />
             </div>
           </div>
         </div>
         
         <div>
-          <Label htmlFor="type" className="text-white mb-1.5 block">Tipo de Yate</Label>
+          <Label htmlFor="type" className="text-[#152B3D] mb-1.5 block">Tipo de Yate</Label>
           <Select>
-            <SelectTrigger id="type" className="w-full bg-white/20 border-white/20 text-white focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger id="type" className="w-full bg-white/20 border-white/20 text-[#152B3D] focus:ring-0 focus:ring-offset-0">
               <SelectValue placeholder="Seleccionar tipo" />
             </SelectTrigger>
             <SelectContent>
@@ -103,7 +103,7 @@ const SearchForm = () => {
           </Select>
         </div>
         
-        <Button className="w-full bg-gold hover:bg-gold/90 text-navy-dark" size="lg">
+        <Button className="w-full bg-[#152B3D] hover:bg-[#599ACF] text-white" size="lg">
           Buscar
         </Button>
       </div>

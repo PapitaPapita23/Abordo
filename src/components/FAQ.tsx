@@ -53,26 +53,26 @@ const faqs: FAQType[] = [
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-20 bg-white">
+    <section id="faq" className="py-20 bg-[#152B3D]">
       <div className="container mx-auto px-6 lg:px-8">
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <span className="inline-block text-sm font-medium text-blue-600">Preguntas Frecuentes</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-navy-dark mt-2 mb-4">
+          <span className="inline-flex h-7 px-4 py-[3px] justify-center items-center text-sm font-medium rounded-full bg-[rgba(89,154,207,0.30)] text-[#F5EEE7]">FAQ</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#F5EEE7] mt-2 mb-4">
             Preguntas Comunes Sobre Nuestros Chárters de Yates
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-300">
             Encuentra respuestas a preguntas comunes sobre nuestros servicios de chárter de yates de lujo.
           </p>
         </div>
         
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-subtle border border-gray-100 overflow-hidden">
+        <div className="max-w-3xl mx-auto bg-[rgba(255,255,255,0.05)] rounded-xl shadow-subtle border border-[rgba(255,255,255,0.05)] overflow-hidden">
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq) => (
-              <AccordionItem key={faq.id} value={faq.id} className="border-b border-gray-100 last:border-0">
-                <AccordionTrigger className="px-6 py-4 hover:no-underline text-navy-dark hover:text-blue-600 transition-colors duration-300 text-left">
+              <AccordionItem key={faq.id} value={faq.id} className="border-b border-[rgba(255,255,255,0.05)] last:border-0">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline text-[#F5EEE7] hover:text-[#F5EEE7] transition-colors duration-300 text-left">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-4 text-gray-600">
+                <AccordionContent className="px-6 pb-4 text-[#F5EEE7]">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -81,8 +81,8 @@ const FAQ = () => {
         </div>
         
         <div className="mt-12 text-center">
-          <p className="text-gray-600 mb-4">¿Tienes más preguntas? Estamos aquí para ayudarte a planificar tu experiencia perfecta de chárter.</p>
-          <Button size="lg" className="bg-navy-dark hover:bg-navy-light text-white">
+          <p className="text-[#F5EEE7] mb-4">¿Tienes más preguntas? Estamos aquí para ayudarte a planificar tu experiencia perfecta de chárter.</p>
+          <Button size="lg" className="bg-navy-dark hover:bg-navy-light text-[#F5EEE7]">
             Contáctanos
           </Button>
         </div>
