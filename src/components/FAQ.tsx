@@ -1,4 +1,3 @@
-
 import { FAQ as FAQType } from '@/types';
 import {
   Accordion,
@@ -42,7 +41,7 @@ const faqs: FAQType[] = [
   {
     id: '7',
     question: 'Can I specify dietary preferences or restrictions?',
-    answer: 'Yes, we accommodate all dietary requirements. Prior to your charter, you'll complete a preference sheet detailing any allergies, restrictions, and food/beverage preferences. Our chefs will tailor all meals and provisions accordingly.'
+    answer: "Yes, we accommodate all dietary requirements. Prior to your charter, you'll complete a preference sheet detailing any allergies, restrictions, and food/beverage preferences. Our chefs will tailor all meals and provisions accordingly."
   },
   {
     id: '8',
