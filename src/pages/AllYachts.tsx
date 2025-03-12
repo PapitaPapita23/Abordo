@@ -4,8 +4,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import YachtCard from "@/components/YachtCard";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { Yacht } from "@/types";
+import Navbar from "@/components/Navbar";
 
 // Using the same data from FeaturedYachts
 const allYachts: Yacht[] = [
@@ -139,35 +140,49 @@ const AllYachts = () => {
   });
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      <div className="container mx-auto px-6 lg:px-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-[#152B3D] mb-8">
-          Todos los Yates
-        </h1>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <Navbar />
+      <div className="container mx-auto px-4 lg:px-8 pt-28 pb-16">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#152B3D]">
+            Todos los Yates
+          </h1>
+          <div className="hidden md:flex items-center text-sm text-gray-500">
+            <span>{filteredYachts.length} yates encontrados</span>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Filters sidebar */}
-          <div className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
+          <div className="lg:sticky lg:top-28 space-y-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
+            <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
+              <SlidersHorizontal className="h-5 w-5 text-[#152B3D]" />
+              <span className="font-medium text-[#152B3D]">Filtros</span>
+            </div>
+
             {/* Search */}
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Buscar yates..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <div className="space-y-2">
+              <Label className="text-sm text-gray-600">Buscar</Label>
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Buscar yates..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              </div>
             </div>
 
             {/* Category filter */}
             <div className="space-y-2">
-              <Label>Categoría</Label>
+              <Label className="text-sm text-gray-600">Categoría</Label>
               <Select
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Seleccionar categoría" />
                 </SelectTrigger>
                 <SelectContent>
@@ -182,8 +197,8 @@ const AllYachts = () => {
             </div>
 
             {/* Price range filter */}
-            <div className="space-y-2">
-              <Label>Rango de precio por día</Label>
+            <div className="space-y-3">
+              <Label className="text-sm text-gray-600">Rango de precio por día</Label>
               <Slider
                 value={priceRange}
                 min={0}
@@ -192,9 +207,13 @@ const AllYachts = () => {
                 onValueChange={setPriceRange}
                 className="mt-2"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-1">
-                <span>${priceRange[0]}</span>
-                <span>${priceRange[1]}</span>
+              <div className="flex justify-between items-center">
+                <div className="px-3 py-1 bg-gray-50 rounded text-sm text-gray-600">
+                  ${priceRange[0]}
+                </div>
+                <div className="px-3 py-1 bg-gray-50 rounded text-sm text-gray-600">
+                  ${priceRange[1]}
+                </div>
               </div>
             </div>
           </div>
@@ -207,8 +226,13 @@ const AllYachts = () => {
               ))}
             </div>
             {filteredYachts.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No se encontraron yates que coincidan con los filtros seleccionados.
+              <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
+                <div className="text-gray-500 mb-2">
+                  No se encontraron yates que coincidan con los filtros seleccionados.
+                </div>
+                <div className="text-sm text-gray-400">
+                  Intenta ajustar los filtros para ver más resultados.
+                </div>
               </div>
             )}
           </div>
