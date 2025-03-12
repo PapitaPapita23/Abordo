@@ -1,13 +1,17 @@
+
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Yacht } from '@/types';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 interface YachtCardProps {
   yacht: Yacht;
 }
 
 const YachtCard = ({ yacht }: YachtCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="group relative bg-white rounded-xl overflow-hidden shadow-subtle transition-all duration-300 hover:shadow-lg">
       {/* Image Container */}
@@ -67,6 +71,7 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
               "transition-all duration-300",
               "bg-[#152B3D] text-[#F5EEE7] border border-navy-dark/20 hover:bg-navy-dark hover:text-white"
             )}
+            onClick={() => navigate(`/yates/${yacht.id}`)}
           >
             Ver Detalles
           </Button>
@@ -77,4 +82,3 @@ const YachtCard = ({ yacht }: YachtCardProps) => {
 };
 
 export default YachtCard;
-

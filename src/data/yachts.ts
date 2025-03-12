@@ -1,0 +1,108 @@
+import { Yacht } from '@/types';
+
+export const allYachts: Yacht[] = [
+  {
+    id: "1",
+    name: "Serenity Sail",
+    category: "Velero",
+    image:
+      "https://images.unsplash.com/photo-1599772335946-23f8573a49c3?q=80&w=1000",
+    rating: 4.8,
+    reviews: 12,
+    capacity: 6,
+    cabins: 3,
+    length: 42,
+    pricePerDay: 1250,
+  },
+  {
+    id: "2",
+    name: "Ocean Explorer",
+    category: "Catamarán",
+    image:
+      "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=1000",
+    rating: 4.9,
+    reviews: 31,
+    capacity: 8,
+    cabins: 4,
+    length: 50,
+    pricePerDay: 1800,
+  },
+  {
+    id: "3",
+    name: "Velocity",
+    category: "Speedboat",
+    image:
+      "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?q=80&w=1000",
+    rating: 4.7,
+    reviews: 25,
+    capacity: 10,
+    cabins: 5,
+    length: 62,
+    pricePerDay: 2300,
+  },
+  {
+    id: "4",
+    name: "Luxury Wave",
+    category: "Yate",
+    image:
+      "https://images.unsplash.com/photo-1621406775527-76ace47159ce?q=80&w=1000",
+    rating: 4.9,
+    reviews: 19,
+    capacity: 12,
+    cabins: 6,
+    length: 78,
+    pricePerDay: 4500,
+  },
+  {
+  id: "5",
+    name: "Dream Voyager",
+    category: "Velero",
+    image:
+      "https://images.unsplash.com/photo-1558473079-8ecf6b06e4cf?q=80&w=1000",
+    rating: 4.6,
+    reviews: 15,
+    capacity: 4,
+    cabins: 2,
+    length: 36,
+    pricePerDay: 950,
+  },
+  {
+    id: "6",
+    name: "Sunset Cruise",
+    category: "Catamarán",
+    image:
+      "https://images.unsplash.com/photo-1552070074-62b8b349bf2a?q=80&w=1000",
+    rating: 4.8,
+    reviews: 22,
+    capacity: 10,
+    cabins: 5,
+    length: 55,
+    pricePerDay: 2200,
+  },
+  {
+    id: "7",
+    name: "Speed Racer",
+    category: "Speedboat",
+    image:
+      "https://images.unsplash.com/photo-1548096237-d67b3ffbce9f?q=80&w=1000",
+    rating: 4.5,
+    reviews: 40,
+    capacity: 8,
+    cabins: 3,
+    length: 45,
+    pricePerDay: 1500,
+  },
+  {
+    id: "8",
+    name: "Royal Odyssey",
+    category: "Yate",
+    image:
+      "https://images.unsplash.com/photo-1611862724040-08d37d530682?q=80&w=1000",
+    rating: 5.0,
+    reviews: 50,
+    capacity: 20,
+    cabins: 10,
+    length: 100,
+    pricePerDay: 7500,
+  },
+];
