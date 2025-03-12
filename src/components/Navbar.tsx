@@ -4,13 +4,18 @@ import { Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
+  // Efecto para manejar el desplazamiento
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -27,9 +32,36 @@ const Navbar = () => {
     };
   }, []);
 
+  // Efecto para deshabilitar el desplazamiento cuando un modal está abierto
+  useEffect(() => {
+    if (isLoginModalOpen || isRegisterModalOpen || mobileMenuOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [isLoginModalOpen, isRegisterModalOpen, mobileMenuOpen]);
+
+  // Función para manejar el cierre de sesión
   const handleLogout = () => {
     logout();
     navigate("/");
+    window.location.reload();
+    setMobileMenuOpen(false);
+  };
+
+  // Funciones para abrir los modales
+  const openLoginModal = () => {
+    setLoginModalOpen(true);
+    setRegisterModalOpen(false);
+  };
+
+  const openRegisterModal = () => {
+    setRegisterModalOpen(true);
+    setLoginModalOpen(false);
+  };
+
+  // Función para cerrar el menú móvil
+  const closeMobileMenu = () => {
     setMobileMenuOpen(false);
   };
 
@@ -42,12 +74,13 @@ const Navbar = () => {
     >
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
+          {/* Logo */}
           <Link to="/" className="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 148 95"
               fill="none"
-              className="h-8 w-8 mr-2"
+              className="w-8 h-8 mr-2"
             >
               <path
                 d="M35.3766 94.0849C34.0731 94.0849 32.8297 93.3626 32.218 92.1185L1.10253 28.4006C-0.301328 26.2536 -0.371521 23.5849 0.932059 21.3476C2.2958 19.0099 4.80269 17.7358 7.50009 18.0368L95.6522 27.8789C97.5774 28.0896 98.9613 29.8353 98.7507 31.7615C98.5401 33.6878 96.7953 35.0723 94.87 34.8617L7.28952 25.0898L38.5153 89.0385C39.3676 90.7841 38.6456 92.881 36.9008 93.7338C36.4095 93.9746 35.878 94.0949 35.3666 94.0949L35.3766 94.0849Z"
@@ -79,6 +112,8 @@ const Navbar = () => {
               Abordo
             </span>
           </Link>
+
+          {/* Enlaces y botones */}
           <div className="flex items-center space-x-4 justify-end">
             <div className="flex justify-end items-center space-x-8">
               <NavLinks scrolled={scrolled} />
@@ -117,43 +152,24 @@ const Navbar = () => {
                       ? "text-navy-dark hover:bg-navy-dark/10"
                       : "text-white hover:bg-white/10"
                   )}
-                  onClick={() => navigate("/login")}
+                  onClick={openLoginModal}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className={cn(
-                      "transition-colors duration-300",
-                      scrolled ? "stroke-navy-dark" : "stroke-white"
-                    )}
-                  >
-                    <path
-                      d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                      stroke-width="1.8"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
-                      stroke-width="1.8"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M7 20.662V19C7 18.4696 7.21071 17.9609 7.58579 17.5858C7.96086 17.2107 8.46957 17 9 17H15C15.5304 17 16.0391 17.2107 16.4142 17.5858C16.7893 17.9609 17 18.4696 17 19V20.662"
-                      stroke-width="1.8"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                   Iniciar Sesión
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "hidden md:flex transition-colors duration-300",
+                    scrolled
+                      ? "text-navy-dark hover:bg-navy-dark/10"
+                      : "text-white hover:bg-white/10"
+                  )}
+                  onClick={openRegisterModal}
+                >
+                  Registrarse
                 </Button>
               </>
             )}
-
             <Button
               variant="ghost"
               size="icon"
@@ -167,109 +183,82 @@ const Navbar = () => {
             </Button>
           </div>
         </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden mt-4 py-4 bg-white rounded-lg shadow-md animate-fade-in">
-            <div className="flex flex-col space-y-3 px-4">
-              <Link
-                to="/"
-                className="py-2 text-navy-dark hover:text-navy-light transition-colors"
-              >
-                Inicio
-              </Link>
-              <a
-                href="#yachts"
-                className="py-2 text-navy-dark hover:text-navy-light transition-colors"
-              >
-                Nuestra Flota
-              </a>
-              <a
-                href="#experience"
-                className="py-2 text-navy-dark hover:text-navy-light transition-colors"
-              >
-                Experiencia
-              </a>
-              <a
-                href="#booking"
-                className="py-2 text-navy-dark hover:text-navy-light transition-colors"
-              >
-                Cómo Reservar
-              </a>
-              <a
-                href="#faq"
-                className="py-2 text-navy-dark hover:text-navy-light transition-colors"
-              >
-                Preguntas Frecuentes
-              </a>
-              <div className="pt-2 flex flex-col space-y-2">
-                {isAuthenticated ? (
-                  <>
-                    <div className="text-navy-dark">Hola, {user?.name}</div>
-                    <Button
-                      variant="ghost"
-                      className="justify-start"
-                      onClick={handleLogout}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Cerrar Sesión
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="ghost"
-                      className="justify-start"
-                      onClick={() => {
-                        navigate("/login");
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      Iniciar Sesión
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        navigate("/register");
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      Registrarse
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Menú móvil */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-white p-6">
+          <div className="flex flex-col space-y-4">
+            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark">
+              Publica tu barco
+            </Link>
+            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark">
+              Centro de ayuda
+            </Link>
+            {isAuthenticated ? (
+              <>
+                <span>Hola, {user?.name}</span>
+                <Button onClick={handleLogout}>Cerrar Sesión</Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={openLoginModal}>Iniciar Sesión</Button>
+                <Button onClick={openRegisterModal}>Registrarse</Button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Login */}
+      {isLoginModalOpen && (
+        <div className="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 flex justify-center items-center">
+          <div>
+            <Login
+              onClose={() => setLoginModalOpen(false)}
+              onSwitchToRegister={openRegisterModal}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Register */}
+      {isRegisterModalOpen && (
+        <div className="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 flex justify-center items-center">
+          <div>
+            <Register
+              onClose={() => setRegisterModalOpen(false)}
+              onSwitchToLogin={openLoginModal}
+            />
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
 
 const NavLinks = ({ scrolled }: { scrolled: boolean }) => {
   return (
-    <>
-      <div className="hidden md:flex justify-end">
-        <Link
-          to="/"
-          className={cn(
-            "font-inter transition-colors duration-300 hover:opacity-80",
-            scrolled ? "text-navy-dark" : "text-white"
-          )}
-        >
-          Publica tu barco
-        </Link>
-        <Link
-          to="/"
-          className={cn(
-            "font-inter transition-colors duration-300 hover:opacity-80 ml-4",
-            scrolled ? "text-navy-dark" : "text-white"
-          )}
-        >
-          Centro de ayuda
-        </Link>
-      </div>
-    </>
+    <div className="hidden md:flex justify-end">
+      <Link
+        to="/"
+        className={cn(
+          "font-inter transition-colors duration-300 hover:opacity-80",
+          scrolled ? "text-navy-dark" : "text-white"
+        )}
+      >
+        Publica tu barco
+      </Link>
+      <Link
+        to="/"
+        className={cn(
+          "font-inter transition-colors duration-300 hover:opacity-80 ml-4",
+          scrolled ? "text-navy-dark" : "text-white"
+        )}
+      >
+        Centro de ayuda
+      </Link>
+    </div>
   );
 };
 
