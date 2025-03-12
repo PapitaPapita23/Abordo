@@ -56,6 +56,58 @@ const featuredYachts: Yacht[] = [
     length: 78,
     pricePerDay: 4500,
   },
+  {
+  id: "5",
+    name: "Dream Voyager",
+    category: "Velero",
+    image:
+      "https://images.unsplash.com/photo-1558473079-8ecf6b06e4cf?q=80&w=1000",
+    rating: 4.6,
+    reviews: 15,
+    capacity: 4,
+    cabins: 2,
+    length: 36,
+    pricePerDay: 950,
+  },
+  {
+    id: "6",
+    name: "Sunset Cruise",
+    category: "Catamarán",
+    image:
+      "https://images.unsplash.com/photo-1552070074-62b8b349bf2a?q=80&w=1000",
+    rating: 4.8,
+    reviews: 22,
+    capacity: 10,
+    cabins: 5,
+    length: 55,
+    pricePerDay: 2200,
+  },
+  {
+    id: "7",
+    name: "Speed Racer",
+    category: "Speedboat",
+    image:
+      "https://images.unsplash.com/photo-1548096237-d67b3ffbce9f?q=80&w=1000",
+    rating: 4.5,
+    reviews: 40,
+    capacity: 8,
+    cabins: 3,
+    length: 45,
+    pricePerDay: 1500,
+  },
+  {
+    id: "8",
+    name: "Royal Odyssey",
+    category: "Yate",
+    image:
+      "https://images.unsplash.com/photo-1611862724040-08d37d530682?q=80&w=1000",
+    rating: 5.0,
+    reviews: 50,
+    capacity: 20,
+    cabins: 10,
+    length: 100,
+    pricePerDay: 7500,
+  },
 ];
 
 const FeaturedYachts = () => {
@@ -66,10 +118,14 @@ const FeaturedYachts = () => {
     new Set(featuredYachts.map((yacht) => yacht.category.toLowerCase()))
   );
 
+  // Filtrar y ordenar los yates según la puntuación
+  const sortedYachts = featuredYachts.sort((a, b) => b.rating - a.rating); // Ordenar de mayor a menor según la puntuación
+  const topYachts = sortedYachts.slice(0, 4); // Obtener solo los 4 primeros
+
   const filteredYachts =
     filter === "all"
-      ? featuredYachts
-      : featuredYachts.filter((yacht) =>
+      ? topYachts
+      : topYachts.filter((yacht) =>
           yacht.category.toLowerCase().includes(filter.toLowerCase())
         );
 
@@ -87,7 +143,7 @@ const FeaturedYachts = () => {
             </p>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 space-x-2 flex-wrap">
             {/* Botón "Todos los Tipos" */}
             <Button
               variant={filter === "all" ? "default" : "outline"}
@@ -95,7 +151,7 @@ const FeaturedYachts = () => {
               onClick={() => setFilter("all")}
               className={`whitespace-nowrap ${
                 filter === "all" ? "bg-[#152B3D] text-white" : ""
-              }`}
+              } w-auto`}
             >
               Todos los Tipos
             </Button>
@@ -109,7 +165,7 @@ const FeaturedYachts = () => {
                 onClick={() => setFilter(category)}
                 className={`whitespace-nowrap ${
                   filter === category ? "bg-[#152B3D] text-white" : ""
-                }`}
+                } w-auto`}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}{" "}
                 {/* Capitaliza la primera letra */}
@@ -118,12 +174,14 @@ const FeaturedYachts = () => {
           </div>
         </div>
 
+        {/* Mostrar los yates filtrados */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredYachts.map((yacht) => (
             <YachtCard key={yacht.id} yacht={yacht} />
           ))}
         </div>
 
+        {/* Botón para ver más yates */}
         <div className="mt-12 text-center">
           <Button
             variant="outline"
