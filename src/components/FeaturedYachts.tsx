@@ -2,6 +2,7 @@ import { useState } from "react";
 import YachtCard from "./YachtCard";
 import { Button } from "@/components/ui/button";
 import { Yacht } from "@/types";
+import { Link } from "react-router-dom";
 
 const featuredYachts: Yacht[] = [
   {
@@ -186,8 +187,9 @@ const FeaturedYachts = () => {
           <Button
             variant="outline"
             className="bg-[#152B3D] border-[#152B3D] text-[#F5EEE7] hover:bg-[#152B3D] hover:border-[#152B3D] hover:text-[#F5EEE7]"
+            asChild
           >
-            Ver Todos los Yates
+            <Link to="/yates">Ver Todos los Yates</Link>
           </Button>
         </div>
       </div>
