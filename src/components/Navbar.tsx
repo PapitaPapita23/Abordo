@@ -1,7 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import Login from "@/pages/Login";
@@ -12,6 +14,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -41,12 +44,27 @@ const Navbar = () => {
     }
   }, [isLoginModalOpen, isRegisterModalOpen, mobileMenuOpen]);
 
+  // Efecto para cerrar el menú de usuario al hacer clic fuera de él
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const userMenu = document.getElementById('user-menu');
+      if (userMenu && !userMenu.contains(event.target as Node) && userMenuOpen) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [userMenuOpen]);
+
   // Función para manejar el cierre de sesión
   const handleLogout = () => {
     logout();
     navigate("/");
-    window.location.reload();
     setMobileMenuOpen(false);
+    setUserMenuOpen(false);
   };
 
   // Funciones para abrir los modales
@@ -63,6 +81,11 @@ const Navbar = () => {
   // Función para cerrar el menú móvil
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+  };
+
+  // Función para alternar el menú de usuario
+  const toggleUserMenu = () => {
+    setUserMenuOpen(!userMenuOpen);
   };
 
   return (
@@ -119,29 +142,66 @@ const Navbar = () => {
               <NavLinks scrolled={scrolled} />
             </div>
             {isAuthenticated ? (
-              <>
+              <div className="hidden md:flex items-center space-x-4 relative">
                 <div
                   className={cn(
-                    "hidden md:block transition-colors duration-300",
+                    "transition-colors duration-300",
                     scrolled ? "text-navy-dark" : "text-white"
                   )}
                 >
-                  <span className="mr-2">Hola, {user?.name}</span>
+                  <div className="flex items-center">
+                    <div id="user-menu" className="relative">
+                      <Button
+                        variant="ghost"
+                        className={cn(
+                          "flex items-center p-1 rounded-full hover:bg-opacity-10",
+                          scrolled ? "hover:bg-navy-dark/10" : "hover:bg-white/10"
+                        )}
+                        onClick={toggleUserMenu}
+                      >
+                        <Avatar className="h-8 w-8 border-2 border-[#599ACF]">
+                          <AvatarImage src={user?.photoURL || undefined} alt={user?.name || "Usuario"} />
+                          <AvatarFallback className="bg-[#599ACF] text-white">
+                            {user?.name?.charAt(0) || user?.email?.charAt(0) || <UserIcon className="h-4 w-4" />}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="ml-2 max-w-[100px] truncate">
+                          {user?.name || user?.email?.split('@')[0]}
+                        </span>
+                      </Button>
+                      
+                      {/* Menú desplegable del usuario */}
+                      {userMenuOpen && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                          <div className="px-4 py-2 border-b">
+                            <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+                            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                          </div>
+                          <Link 
+                            to="/profile" 
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <div className="flex items-center">
+                              <UserIcon className="mr-2 h-4 w-4" />
+                              Mi perfil
+                            </div>
+                          </Link>
+                          <button
+                            className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={handleLogout}
+                          >
+                            <div className="flex items-center">
+                              <LogOut className="mr-2 h-4 w-4" />
+                              Cerrar sesión
+                            </div>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "hidden md:flex transition-colors duration-300",
-                    scrolled
-                      ? "text-navy-dark hover:bg-navy-dark/10"
-                      : "text-white hover:bg-white/10"
-                  )}
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Cerrar Sesión
-                </Button>
-              </>
+              </div>
             ) : (
               <>
                 <Button
@@ -189,21 +249,83 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-40 bg-white p-6">
           <div className="flex flex-col space-y-4">
-            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark">
+            <div className="flex justify-between items-center">
+              <Link to="/" className="flex items-center" onClick={closeMobileMenu}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 148 95"
+                  fill="none"
+                  className="w-8 h-8 mr-2"
+                >
+                  {/* ... SVG paths ... */}
+                </svg>
+                <span className="font-sans font-semibold text-2xl text-[#2D3E54]">
+                  Abordo
+                </span>
+              </Link>
+              <button
+                className="p-2 text-gray-500 hover:text-gray-800"
+                onClick={closeMobileMenu}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M8 7.293l-4.146-4.146a1 1 0 0 0-1.414 1.414L6.586 8 2.44 12.146a1 1 0 0 0 1.414 1.414L8 9.414l4.146 4.146a1 1 0 0 0 1.414-1.414L9.414 8l4.146-4.146a1 1 0 0 0-1.414-1.414L8 7.293z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            </div>
+            
+            <hr className="my-2" />
+            
+            {isAuthenticated && (
+              <div className="flex items-center py-2">
+                <Avatar className="h-10 w-10 border-2 border-[#599ACF]">
+                  <AvatarImage src={user?.photoURL || undefined} alt={user?.name || "Usuario"} />
+                  <AvatarFallback className="bg-[#599ACF] text-white">
+                    {user?.name?.charAt(0) || user?.email?.charAt(0) || <UserIcon className="h-5 w-5" />}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="ml-3">
+                  <p className="font-medium text-gray-900">{user?.name || "Usuario"}</p>
+                  <p className="text-sm text-gray-500 truncate max-w-[200px]">{user?.email}</p>
+                </div>
+              </div>
+            )}
+            
+            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark py-2">
               Publica tu barco
             </Link>
-            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark">
+            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark py-2">
               Centro de ayuda
             </Link>
             {isAuthenticated ? (
               <>
-                <span>Hola, {user?.name}</span>
-                <Button onClick={handleLogout}>Cerrar Sesión</Button>
+                <Link to="/profile" onClick={closeMobileMenu} className="text-navy-dark py-2 flex items-center">
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  Mi perfil
+                </Link>
+                <button onClick={handleLogout} className="text-left w-full flex items-center text-red-600 py-2">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Cerrar Sesión
+                </button>
               </>
             ) : (
               <>
-                <Button onClick={openLoginModal}>Iniciar Sesión</Button>
-                <Button onClick={openRegisterModal}>Registrarse</Button>
+                <Button onClick={openLoginModal} className="w-full justify-center mt-2">
+                  Iniciar Sesión
+                </Button>
+                <Button onClick={openRegisterModal} variant="outline" className="w-full justify-center mt-2">
+                  Registrarse
+                </Button>
               </>
             )}
           </div>
