@@ -14,12 +14,12 @@ import {
 } from "@/firebase/firebase";
 import { LockKeyhole, Mail } from "lucide-react";
 
-type LoginProps = {
-  onClose: () => void;
-  onSwitchToRegister: () => void;
+export type LoginProps = {
+  onClose?: () => void;
+  onSwitchToRegister?: () => void;
 };
 
-const Login = ({ onClose, onSwitchToRegister }: LoginProps) => {
+const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -111,7 +111,7 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps) => {
           description: "Inicio de sesión exitoso",
         });
         navigate("/");
-        onClose();
+        if (onClose) onClose();
       } else {
         setErrorMessage("Credenciales inválidas");
         toast({
@@ -132,27 +132,32 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps) => {
     }
   };
 
+  // Determine if this is a standalone page (not in a modal)
+  const isStandalonePage = !onClose;
+
   return (
-    <div className="relative flex flex-col justify-center">
-      <button
-        className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-800"
-        onClick={onClose}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
+    <div className={`relative flex flex-col justify-center ${isStandalonePage ? 'min-h-screen p-6' : ''}`}>
+      {onClose && (
+        <button
+          className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-800"
+          onClick={onClose}
         >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M8 7.293l-4.146-4.146a1 1 0 0 0-1.414 1.414L6.586 8 2.44 12.146a1 1 0 0 0 1.414 1.414L8 9.414l4.146 4.146a1 1 0 0 0 1.414-1.414L9.414 8l4.146-4.146a1 1 0 0 0-1.414-1.414L8 7.293z"
-            fill="currentColor"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M8 7.293l-4.146-4.146a1 1 0 0 0-1.414 1.414L6.586 8 2.44 12.146a1 1 0 0 0 1.414 1.414L8 9.414l4.146 4.146a1 1 0 0 0 1.414-1.414L9.414 8l4.146-4.146a1 1 0 0 0-1.414-1.414L8 7.293z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      )}
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
@@ -163,13 +168,22 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps) => {
               </h2>
               <p className="mt-2 text-center text-sm text-gray-600">
                 ¿No tienes una cuenta?{" "}
-                <button
-                  type="button"
-                  onClick={onSwitchToRegister}
-                  className="font-medium text-[#599ACF] hover:text-[#599ACF]"
-                >
-                  Regístrate
-                </button>
+                {onSwitchToRegister ? (
+                  <button
+                    type="button"
+                    onClick={onSwitchToRegister}
+                    className="font-medium text-[#599ACF] hover:text-[#599ACF]"
+                  >
+                    Regístrate
+                  </button>
+                ) : (
+                  <a 
+                    href="/register" 
+                    className="font-medium text-[#599ACF] hover:text-[#599ACF]"
+                  >
+                    Regístrate
+                  </a>
+                )}
               </p>
             </div>
             
