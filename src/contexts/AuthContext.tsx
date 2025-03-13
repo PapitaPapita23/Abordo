@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   auth, 
@@ -68,45 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, [toast]);
 
-  // Update user profile
-  const updateUserProfile = async (name: string, photoURL?: string): Promise<boolean> => {
-    try {
-      if (!auth.currentUser) return false;
-      
-      const updateData: { displayName: string; photoURL?: string } = { displayName: name };
-      if (photoURL) updateData.photoURL = photoURL;
-      
-      await updateProfile(auth.currentUser, updateData);
-      
-      // Update local user state
-      setUser(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          name,
-          ...(photoURL ? { photoURL } : {})
-        };
-      });
-      
-      toast({
-        title: "Perfil actualizado",
-        description: "Tu información de perfil ha sido actualizada correctamente",
-      });
-      
-      return true;
-    } catch (error: any) {
-      console.error("Error updating profile:", error);
-      
-      toast({
-        title: "Error al actualizar el perfil",
-        description: "No se pudo actualizar tu información de perfil",
-        variant: "destructive",
-      });
-      
-      return false;
-    }
-  };
-
   // Google login with improved error handling
   const loginWithGoogleHandler = async (): Promise<boolean> => {
     try {
@@ -119,15 +79,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error: any) {
       console.error("Error logging in with Google:", error);
       
-      const errorMessage = error.code 
-        ? getAuthErrorMessage(error.code)
-        : "Hubo un problema al iniciar sesión con Google";
-      
-      toast({
-        title: "Error de autenticación",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      // Specific handling for unauthorized domain error
+      if (error.code === 'auth/unauthorized-domain') {
+        // Show more detailed error for development environments
+        const currentDomain = window.location.hostname;
+        const isLocalhost = ['localhost', '127.0.0.1'].includes(currentDomain);
+        
+        const errorTitle = isLocalhost 
+          ? "Error de configuración de Firebase" 
+          : "Error de autenticación";
+          
+        const errorMessage = isLocalhost
+          ? `El dominio "${currentDomain}" no está autorizado. Agrega "${currentDomain}" en Firebase Console > Authentication > Settings > Authorized domains.`
+          : "Este dominio no está autorizado para usar la autenticación de Google. Por favor, contacta al administrador.";
+        
+        toast({
+          title: errorTitle,
+          description: errorMessage,
+          variant: "destructive",
+          duration: 6000, // Show longer for this important error
+        });
+      } else {
+        // Handle other errors
+        const errorMessage = error.code 
+          ? getAuthErrorMessage(error.code)
+          : "Hubo un problema al iniciar sesión con Google";
+        
+        toast({
+          title: "Error de autenticación",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
       
       return false;
     } finally {
@@ -209,6 +192,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Update user profile
+  const updateUserProfile = async (name: string, photoURL?: string): Promise<boolean> => {
+    try {
+      if (!auth.currentUser) return false;
+      
+      const updateData: { displayName: string; photoURL?: string } = { displayName: name };
+      if (photoURL) updateData.photoURL = photoURL;
+      
+      await updateProfile(auth.currentUser, updateData);
+      
+      // Update local user state
+      setUser(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          name,
+          ...(photoURL ? { photoURL } : {})
+        };
+      });
+      
+      toast({
+        title: "Perfil actualizado",
+        description: "Tu información de perfil ha sido actualizada correctamente",
+      });
+      
+      return true;
+    } catch (error: any) {
+      console.error("Error updating profile:", error);
+      
+      toast({
+        title: "Error al actualizar el perfil",
+        description: "No se pudo actualizar tu información de perfil",
+        variant: "destructive",
+      });
+      
+      return false;
     }
   };
 

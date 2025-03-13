@@ -1,4 +1,3 @@
-
 // src/firebase/firebase.ts
 import { initializeApp } from "firebase/app";
 import { 
@@ -45,6 +44,16 @@ const signInWithGoogle = async (): Promise<UserCredential> => {
     return await signInWithPopup(auth, googleProvider);
   } catch (error) {
     console.error("Error signing in with Google:", error);
+    
+    // Check if this is a domain authorization error and provide a more helpful message
+    if (error instanceof Error && 'code' in error && error.code === 'auth/unauthorized-domain') {
+      // Rethrow with a more descriptive message about domain authorization
+      const currentDomain = window.location.hostname;
+      const customError = new Error(`This domain (${currentDomain}) is not authorized for Firebase authentication. Please add it to your Firebase console under Authentication > Settings > Authorized domains.`);
+      Object.assign(customError, { code: error.code, originalError: error });
+      throw customError;
+    }
+    
     throw error;
   }
 };
@@ -126,6 +135,8 @@ const getAuthErrorMessage = (errorCode: string): string => {
       return 'La solicitud de inicio de sesión fue cancelada.';
     case 'auth/account-exists-with-different-credential':
       return 'Ya existe una cuenta con este correo electrónico pero con otro método de inicio de sesión.';
+    case 'auth/unauthorized-domain':
+      return 'Este dominio no está autorizado para la autenticación de Firebase. Si estás en desarrollo, agrega este dominio en la consola de Firebase.';
     
     // Default error
     default:
