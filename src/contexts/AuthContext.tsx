@@ -1,27 +1,18 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  User as FirebaseUser, 
-  onAuthStateChanged 
-} from 'firebase/auth';
-import { auth, getCurrentUser } from '@/firebase/firebase';
-import { useToast } from "@/hooks/use-toast";
 
 type User = {
   id: string;
-  email: string | null;
-  name: string | null;
-  photoURL: string | null;
+  email: string;
+  name: string;
 };
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  refreshUserData: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,83 +20,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
-
-  // Función para convertir FirebaseUser a nuestro tipo User
-  const formatUser = (firebaseUser: FirebaseUser): User => {
-    return {
-      id: firebaseUser.uid,
-      email: firebaseUser.email,
-      name: firebaseUser.displayName,
-      photoURL: firebaseUser.photoURL
-    };
-  };
-
-  // Función para refrescar los datos del usuario desde Firebase
-  const refreshUserData = () => {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      setUser(formatUser(currentUser));
-    }
-  };
 
   useEffect(() => {
-    // Verificar si hay un usuario en localStorage primero para una carga rápida
-    const storedUser = localStorage.getItem('firebaseUser');
+    // Check if user is already logged in
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser({
-          id: parsedUser.uid,
-          email: parsedUser.email,
-          name: parsedUser.displayName,
-          photoURL: parsedUser.photoURL
-        });
-      } catch (e) {
-        console.error("Error parsing stored user:", e);
-      }
+      setUser(JSON.parse(storedUser));
     }
-
-    // Verificar estado de autenticación con Firebase
-    const initAuth = async () => {
-      try {
-        const firebaseUser = await getCurrentUser();
-        if (firebaseUser) {
-          setUser(formatUser(firebaseUser));
-        } else {
-          setUser(null);
-          localStorage.removeItem('firebaseUser');
-        }
-      } catch (error) {
-        console.error("Error initializing auth:", error);
-        toast({
-          title: "Error",
-          description: "Hubo un problema al verificar tu sesión",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initAuth();
-
-    // Configurar listener para cambios de estado de autenticación
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(formatUser(firebaseUser));
-      } else {
-        setUser(null);
-        localStorage.removeItem('firebaseUser');
-      }
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [toast]);
+    setIsLoading(false);
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Mantener la función de login para autenticación con email/password
     // Get users from localStorage
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     
@@ -120,12 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // Save user to localStorage and update state
       localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      setUser({
-        id: userWithoutPassword.id,
-        email: userWithoutPassword.email,
-        name: userWithoutPassword.name,
-        photoURL: null
-      });
+      setUser(userWithoutPassword);
       return true;
     }
     
@@ -133,7 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Mantener la función de registro para autenticación con email/password
     // Get existing users
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     
@@ -157,20 +76,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Log user in
     const { password: _, ...userWithoutPassword } = newUser;
     localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-    setUser({
-      id: userWithoutPassword.id,
-      email: userWithoutPassword.email,
-      name: userWithoutPassword.name,
-      photoURL: null
-    });
+    setUser(userWithoutPassword);
     
     return true;
   };
 
   const logout = () => {
-    auth.signOut();
     localStorage.removeItem('user');
-    localStorage.removeItem('firebaseUser');
     setUser(null);
   };
 
@@ -178,19 +90,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider 
       value={{ 
         user, 
-        isAuthenticated: !!user,
-        isLoading,
+        isAuthenticated: !!user, 
         login, 
         register, 
-        logout,
-        refreshUserData
+        logout 
       }}
     >
-      {!isLoading ? children : (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#599ACF]"></div>
-        </div>
-      )}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 }
