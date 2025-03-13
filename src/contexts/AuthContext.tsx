@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   auth, 
@@ -11,6 +12,7 @@ import {
 } from '@/firebase/firebase';
 import { User as FirebaseUser } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 type User = {
   id: string;
@@ -37,9 +39,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
+  // Store auth state in sessionStorage to persist across page refreshes
   useEffect(() => {
+    // Check if we have a stored user
+    const storedUser = sessionStorage.getItem('auth_user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Error parsing stored user:", e);
+        sessionStorage.removeItem('auth_user');
+      }
+    }
+
     // Listen for auth state changes
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      console.log("Auth state changed:", firebaseUser ? `User ${firebaseUser.uid} logged in` : "User logged out");
+      
       if (firebaseUser) {
         // User is signed in
         const userData: User = {
@@ -50,6 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
         
         setUser(userData);
+        // Store user in sessionStorage
+        sessionStorage.setItem('auth_user', JSON.stringify(userData));
         
         // Show welcome toast when user logs in
         toast({
@@ -59,6 +77,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // User is signed out
         setUser(null);
+        // Remove user from sessionStorage
+        sessionStorage.removeItem('auth_user');
       }
       setIsLoading(false);
     });
@@ -73,6 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       const result = await signInWithGoogle();
       const firebaseUser = result.user;
+      console.log("Google login successful:", firebaseUser.uid);
       
       // Success toast shown by useEffect when auth state changes
       return true;
@@ -122,6 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
+      console.log("Attempting login with email:", email);
       await loginWithEmailAndPassword(email, password);
       
       // Success toast shown by useEffect when auth state changes
@@ -149,8 +171,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
+      console.log("Attempting to register with name:", name, "and email:", email);
       await registerWithEmailAndPassword(email, password, name);
       
+      console.log("Registration successful, user should be logged in automatically");
       // Success toast shown by useEffect when auth state changes
       return true;
     } catch (error: any) {
@@ -208,11 +232,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Update local user state
       setUser(prev => {
         if (!prev) return null;
-        return {
+        const updatedUser = {
           ...prev,
           name,
           ...(photoURL ? { photoURL } : {})
         };
+        
+        // Update sessionStorage with new user data
+        sessionStorage.setItem('auth_user', JSON.stringify(updatedUser));
+        
+        return updatedUser;
       });
       
       toast({

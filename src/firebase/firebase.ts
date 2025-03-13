@@ -38,6 +38,45 @@ googleProvider.setCustomParameters({
   access_type: 'offline',
 });
 
+// Function to register with email and password
+const registerWithEmailAndPassword = async (
+  email: string, 
+  password: string, 
+  displayName?: string
+): Promise<UserCredential> => {
+  try {
+    console.log(`Attempting to register user with email: ${email}`);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // If displayName is provided, update the user profile
+    if (displayName && userCredential.user) {
+      console.log(`Updating profile for user: ${userCredential.user.uid} with name: ${displayName}`);
+      await updateProfile(userCredential.user, {
+        displayName: displayName
+      });
+    }
+    
+    console.log(`Registration successful for user: ${userCredential.user.uid}`);
+    return userCredential;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    throw error;
+  }
+};
+
+// Function to login with email and password
+const loginWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {
+  try {
+    console.log(`Attempting to login user with email: ${email}`);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log(`Login successful for user: ${userCredential.user.uid}`);
+    return userCredential;
+  } catch (error) {
+    console.error("Error logging in user:", error);
+    throw error;
+  }
+};
+
 // Function to register/login with Google
 const signInWithGoogle = async (): Promise<UserCredential> => {
   try {
@@ -54,39 +93,6 @@ const signInWithGoogle = async (): Promise<UserCredential> => {
       throw customError;
     }
     
-    throw error;
-  }
-};
-
-// Function to register with email and password
-const registerWithEmailAndPassword = async (
-  email: string, 
-  password: string, 
-  displayName?: string
-): Promise<UserCredential> => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    
-    // If displayName is provided, update the user profile
-    if (displayName && userCredential.user) {
-      await updateProfile(userCredential.user, {
-        displayName: displayName
-      });
-    }
-    
-    return userCredential;
-  } catch (error) {
-    console.error("Error registering user:", error);
-    throw error;
-  }
-};
-
-// Function to login with email and password
-const loginWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {
-  try {
-    return await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    console.error("Error logging in user:", error);
     throw error;
   }
 };
@@ -144,6 +150,7 @@ const getAuthErrorMessage = (errorCode: string): string => {
   }
 };
 
+// Export functions and objects
 export { 
   auth, 
   signInWithGoogle, 

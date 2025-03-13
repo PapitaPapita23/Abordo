@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -29,10 +28,22 @@ const loginSchema = z.object({
 const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const isModal = !!onClose;
+
+  // Get the return URL from location state or default to home page
+  const from = location.state?.from?.pathname || "/";
+  
+  // Check if user is already authenticated and redirect if needed
+  useEffect(() => {
+    if (isAuthenticated && user && !isModal) {
+      console.log("User already authenticated, redirecting to:", from);
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate, from, isModal]);
 
   // Form setup with better validation
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -46,12 +57,18 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
+      console.log("Starting Google login process");
       const success = await loginWithGoogle();
+      console.log("Google login result:", success ? "Success" : "Failed");
+      
       if (success) {
+        console.log("Google login successful, handling navigation");
         if (isModal) {
           onClose?.();
         } else {
-          navigate("/");
+          // Navigate to the home page or intended destination
+          console.log("Redirecting to:", from);
+          navigate(from, { replace: true });
         }
       }
     } finally {
@@ -62,12 +79,18 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
+      console.log("Starting email login process with:", values.email);
       const success = await login(values.email, values.password);
+      console.log("Email login result:", success ? "Success" : "Failed");
+      
       if (success) {
+        console.log("Email login successful, handling navigation");
         if (isModal) {
           onClose?.();
         } else {
-          navigate("/");
+          // Navigate to the home page or intended destination
+          console.log("Redirecting to:", from);
+          navigate(from, { replace: true });
         }
       }
     } finally {
@@ -78,6 +101,15 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  // If already authenticated and not in a modal, show loading
+  if (isAuthenticated && !isModal) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-[#599ACF]" />
+      </div>
+    );
+  }
 
   return (
     <div className={`relative flex flex-col justify-center ${!isModal ? 'min-h-screen p-6' : ''}`}>
