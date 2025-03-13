@@ -1,49 +1,88 @@
-// src/firebase.ts
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
-// Tu configuración de Firebase
+// src/firebase/firebase.ts
+import { initializeApp } from "firebase/app";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  User,
+  UserCredential
+} from "firebase/auth";
+import { getStorage } from "firebase/storage";
+
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyB_4vEdG0Cv35S5ufLcQIovdrofPcw4K3E",
   authDomain: "abordo-70372.firebaseapp.com",
   projectId: "abordo-70372",
-  storageBucket: "abordo-70372.firebasestorage.app",
+  storageBucket: "abordo-70372.appspot.com",
   messagingSenderId: "374371425258",
   appId: "1:374371425258:web:10521a2d2b3a3c1de37093",
   measurementId: "G-25TP4GY830"
 };
 
-// Inicializa Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
-// Proveedor de Google para la autenticación
+// Google provider with improved settings
 const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
 
-// Función para registrar usuario con Google
-const registerWithGoogle = async () => {
+// Function to register/login with Google
+const signInWithGoogle = async (): Promise<UserCredential> => {
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    console.log("Usuario autenticado con Google:", user);
-    return user;
+    return await signInWithPopup(auth, googleProvider);
   } catch (error) {
-    console.error("Error al iniciar sesión con Google:", error);
+    console.error("Error signing in with Google:", error);
     throw error;
   }
 };
 
-// Función para registrar usuario con correo electrónico y contraseña
-const registerWithEmailAndPassword = async (email: string, password: string) => {
+// Function to register with email and password
+const registerWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    console.log("Usuario registrado con éxito:", user);
-    return user;
+    return await createUserWithEmailAndPassword(auth, email, password);
   } catch (error) {
-    console.error("Error al registrar usuario:", error);
+    console.error("Error registering user:", error);
     throw error;
   }
 };
 
-export { auth, registerWithGoogle, registerWithEmailAndPassword, googleProvider };
+// Function to login with email and password
+const loginWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {
+  try {
+    return await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    console.error("Error logging in user:", error);
+    throw error;
+  }
+};
+
+// Function to logout
+const logoutUser = async (): Promise<void> => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Error signing out:", error);
+    throw error;
+  }
+};
+
+export { 
+  auth, 
+  signInWithGoogle, 
+  registerWithEmailAndPassword, 
+  loginWithEmailAndPassword,
+  logoutUser,
+  onAuthStateChanged,
+  storage,
+  googleProvider
+};

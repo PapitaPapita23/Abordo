@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, UserCircle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import Login from "@/pages/Login";
@@ -12,10 +14,12 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Efecto para manejar el desplazamiento
+  // Effect to handle scrolling
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -32,7 +36,7 @@ const Navbar = () => {
     };
   }, []);
 
-  // Efecto para deshabilitar el desplazamiento cuando un modal está abierto
+  // Effect to disable scrolling when a modal is open
   useEffect(() => {
     if (isLoginModalOpen || isRegisterModalOpen || mobileMenuOpen) {
       document.body.classList.add("overflow-hidden");
@@ -41,15 +45,29 @@ const Navbar = () => {
     }
   }, [isLoginModalOpen, isRegisterModalOpen, mobileMenuOpen]);
 
-  // Función para manejar el cierre de sesión
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-    window.location.reload();
+  // Effect to close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Function to handle logout
+  const handleLogout = async () => {
+    await logout();
+    setUserMenuOpen(false);
     setMobileMenuOpen(false);
+    navigate("/");
   };
 
-  // Funciones para abrir los modales
+  // Functions to open modals
   const openLoginModal = () => {
     setLoginModalOpen(true);
     setRegisterModalOpen(false);
@@ -60,7 +78,7 @@ const Navbar = () => {
     setLoginModalOpen(false);
   };
 
-  // Función para cerrar el menú móvil
+  // Function to close mobile menu
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
   };
@@ -113,35 +131,62 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* Enlaces y botones */}
+          {/* Links and buttons */}
           <div className="flex items-center space-x-4 justify-end">
             <div className="flex justify-end items-center space-x-8">
               <NavLinks scrolled={scrolled} />
             </div>
             {isAuthenticated ? (
-              <>
-                <div
+              <div className="hidden md:flex items-center space-x-2 relative" ref={userMenuRef}>
+                <button
                   className={cn(
-                    "hidden md:block transition-colors duration-300",
-                    scrolled ? "text-navy-dark" : "text-white"
+                    "flex items-center space-x-2 px-2 py-1 rounded transition-colors",
+                    scrolled ? "hover:bg-gray-100" : "hover:bg-white/10",
+                    "focus:outline-none"
                   )}
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
                 >
-                  <span className="mr-2">Hola, {user?.name}</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "hidden md:flex transition-colors duration-300",
-                    scrolled
-                      ? "text-navy-dark hover:bg-navy-dark/10"
-                      : "text-white hover:bg-white/10"
-                  )}
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Cerrar Sesión
-                </Button>
-              </>
+                  <Avatar className="h-8 w-8">
+                    {user?.photoURL ? (
+                      <AvatarImage src={user.photoURL} alt={user.name || ""} />
+                    ) : (
+                      <AvatarFallback className="bg-[#599ACF] text-white">
+                        {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <span
+                    className={cn(
+                      "hidden lg:block transition-colors duration-300",
+                      scrolled ? "text-navy-dark" : "text-white"
+                    )}
+                  >
+                    {user?.name}
+                  </span>
+                  <ChevronDown 
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      userMenuOpen ? "transform rotate-180" : "",
+                      scrolled ? "text-navy-dark" : "text-white"
+                    )} 
+                  />
+                </button>
+                
+                {/* User dropdown menu */}
+                {userMenuOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-1">
+                      <button
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                        onClick={handleLogout}
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Cerrar Sesión
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <Button
@@ -185,32 +230,60 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Menú móvil */}
+      {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-white p-6">
-          <div className="flex flex-col space-y-4">
-            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark">
+        <div className="md:hidden fixed inset-0 z-40 bg-white p-6 pt-20">
+          <div className="flex flex-col space-y-6">
+            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark hover:text-[#599ACF] transition-colors">
               Publica tu barco
             </Link>
-            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark">
+            <Link to="/" onClick={closeMobileMenu} className="text-navy-dark hover:text-[#599ACF] transition-colors">
               Centro de ayuda
             </Link>
             {isAuthenticated ? (
               <>
-                <span>Hola, {user?.name}</span>
-                <Button onClick={handleLogout}>Cerrar Sesión</Button>
+                <div className="flex items-center space-x-3 py-2">
+                  <Avatar className="h-10 w-10">
+                    {user?.photoURL ? (
+                      <AvatarImage src={user.photoURL} alt={user.name || ""} />
+                    ) : (
+                      <AvatarFallback className="bg-[#599ACF] text-white">
+                        {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <span className="text-navy-dark font-medium">{user?.name}</span>
+                </div>
+                <Button 
+                  onClick={handleLogout}
+                  className="bg-[#599ACF] hover:bg-[#4785BB] text-white w-full"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Cerrar Sesión
+                </Button>
               </>
             ) : (
               <>
-                <Button onClick={openLoginModal}>Iniciar Sesión</Button>
-                <Button onClick={openRegisterModal}>Registrarse</Button>
+                <Button 
+                  onClick={openLoginModal}
+                  className="bg-[#599ACF] hover:bg-[#4785BB] text-white w-full"
+                >
+                  Iniciar Sesión
+                </Button>
+                <Button 
+                  onClick={openRegisterModal}
+                  variant="outline"
+                  className="border-[#599ACF] text-[#599ACF] hover:bg-[#599ACF]/10 w-full"
+                >
+                  Registrarse
+                </Button>
               </>
             )}
           </div>
         </div>
       )}
 
-      {/* Modal de Login */}
+      {/* Login Modal */}
       {isLoginModalOpen && (
         <div className="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 flex justify-center items-center">
           <div>
@@ -222,7 +295,7 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* Modal de Register */}
+      {/* Register Modal */}
       {isRegisterModalOpen && (
         <div className="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 flex justify-center items-center">
           <div>
