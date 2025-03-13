@@ -9,36 +9,56 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, EyeIcon, EyeOffIcon, CheckCircle, XCircle } from "lucide-react";
 
 type RegisterProps = {
   onClose?: () => void;
   onSwitchToLogin?: () => void;
 };
 
-// Validation schema
+// Enhanced validation schema with better password requirements
 const registerSchema = z.object({
-  name: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres" }),
-  email: z.string().email({ message: "Email inválido" }),
-  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
+  name: z.string()
+    .min(2, { message: "El nombre debe tener al menos 2 caracteres" })
+    .max(50, { message: "El nombre debe tener máximo 50 caracteres" }),
+  email: z.string()
+    .min(1, { message: "El correo electrónico es obligatorio" })
+    .email({ message: "Por favor, ingresa un correo electrónico válido" }),
+  password: z.string()
+    .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
+    .max(100, { message: "La contraseña debe tener máximo 100 caracteres" })
+    .refine(value => /[A-Z]/.test(value), { 
+      message: "La contraseña debe contener al menos una letra mayúscula" 
+    })
+    .refine(value => /[0-9]/.test(value), { 
+      message: "La contraseña debe contener al menos un número" 
+    })
 });
 
 const Register = ({ onClose, onSwitchToLogin }: RegisterProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { register, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const isModal = !!onClose;
 
-  // Form setup
+  // Form setup with enhanced validation
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
       password: ""
-    }
+    },
+    mode: "onChange" // Validate on change for real-time password strength feedback
   });
+
+  // Get password value for strength indicator
+  const password = form.watch("password");
+  const passwordLength = password?.length > 5;
+  const hasUppercase = /[A-Z]/.test(password || "");
+  const hasNumber = /[0-9]/.test(password || "");
 
   const handleGoogleRegister = async () => {
     setIsLoading(true);
@@ -70,6 +90,10 @@ const Register = ({ onClose, onSwitchToLogin }: RegisterProps = {}) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -173,14 +197,59 @@ const Register = ({ onClose, onSwitchToLogin }: RegisterProps = {}) => {
                   <FormItem>
                     <FormLabel>Contraseña</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="********" 
-                        type="password" 
-                        {...field} 
-                        autoComplete="new-password"
-                        disabled={isLoading}
-                      />
+                      <div className="relative">
+                        <Input 
+                          placeholder="********" 
+                          type={showPassword ? "text" : "password"}
+                          {...field} 
+                          autoComplete="new-password"
+                          disabled={isLoading}
+                        />
+                        <button 
+                          type="button"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                          onClick={togglePasswordVisibility}
+                          tabIndex={-1}
+                        >
+                          {showPassword ? 
+                            <EyeOffIcon className="h-4 w-4" /> : 
+                            <EyeIcon className="h-4 w-4" />
+                          }
+                        </button>
+                      </div>
                     </FormControl>
+                    
+                    {/* Password strength indicator */}
+                    <div className="mt-2 space-y-1 text-sm">
+                      <div className="flex items-center">
+                        {passwordLength ? 
+                          <CheckCircle className="h-4 w-4 text-green-500 mr-2" /> : 
+                          <XCircle className="h-4 w-4 text-red-500 mr-2" />
+                        }
+                        <span className={passwordLength ? "text-green-600" : "text-gray-600"}>
+                          Al menos 6 caracteres
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        {hasUppercase ? 
+                          <CheckCircle className="h-4 w-4 text-green-500 mr-2" /> : 
+                          <XCircle className="h-4 w-4 text-red-500 mr-2" />
+                        }
+                        <span className={hasUppercase ? "text-green-600" : "text-gray-600"}>
+                          Al menos una letra mayúscula
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        {hasNumber ? 
+                          <CheckCircle className="h-4 w-4 text-green-500 mr-2" /> : 
+                          <XCircle className="h-4 w-4 text-red-500 mr-2" />
+                        }
+                        <span className={hasNumber ? "text-green-600" : "text-gray-600"}>
+                          Al menos un número
+                        </span>
+                      </div>
+                    </div>
+                    
                     <FormMessage />
                   </FormItem>
                 )}

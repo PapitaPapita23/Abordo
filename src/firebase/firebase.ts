@@ -9,6 +9,7 @@ import {
   signInWithPopup,
   signOut,
   onAuthStateChanged,
+  updateProfile,
   User,
   UserCredential
 } from "firebase/auth";
@@ -33,7 +34,9 @@ const storage = getStorage(app);
 // Google provider with improved settings
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
-  prompt: 'select_account'
+  prompt: 'select_account',
+  // Adding additional OAuth scopes for better user data
+  access_type: 'offline',
 });
 
 // Function to register/login with Google
@@ -47,9 +50,22 @@ const signInWithGoogle = async (): Promise<UserCredential> => {
 };
 
 // Function to register with email and password
-const registerWithEmailAndPassword = async (email: string, password: string): Promise<UserCredential> => {
+const registerWithEmailAndPassword = async (
+  email: string, 
+  password: string, 
+  displayName?: string
+): Promise<UserCredential> => {
   try {
-    return await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // If displayName is provided, update the user profile
+    if (displayName && userCredential.user) {
+      await updateProfile(userCredential.user, {
+        displayName: displayName
+      });
+    }
+    
+    return userCredential;
   } catch (error) {
     console.error("Error registering user:", error);
     throw error;
@@ -76,6 +92,47 @@ const logoutUser = async (): Promise<void> => {
   }
 };
 
+// Function to get Firebase authentication errors in human-readable format
+const getAuthErrorMessage = (errorCode: string): string => {
+  switch (errorCode) {
+    // Registration errors
+    case 'auth/email-already-in-use':
+      return 'Este correo electrónico ya está registrado.';
+    case 'auth/invalid-email':
+      return 'El formato del correo electrónico es inválido.';
+    case 'auth/weak-password':
+      return 'La contraseña es demasiado débil. Debe tener al menos 6 caracteres.';
+    case 'auth/operation-not-allowed':
+      return 'Este método de inicio de sesión no está habilitado.';
+    
+    // Login errors
+    case 'auth/user-disabled':
+      return 'Esta cuenta ha sido deshabilitada.';
+    case 'auth/user-not-found':
+      return 'No existe una cuenta con este correo electrónico.';
+    case 'auth/wrong-password':
+      return 'Contraseña incorrecta.';
+    case 'auth/invalid-credential':
+      return 'Credenciales inválidas. Por favor, verifica tu correo y contraseña.';
+    case 'auth/too-many-requests':
+      return 'Demasiados intentos fallidos. Por favor, inténtalo más tarde.';
+    
+    // Google sign-in errors
+    case 'auth/popup-closed-by-user':
+      return 'Inicio de sesión cancelado. La ventana se cerró antes de completar el proceso.';
+    case 'auth/popup-blocked':
+      return 'El navegador bloqueó la ventana emergente. Por favor, permite ventanas emergentes para este sitio.';
+    case 'auth/cancelled-popup-request':
+      return 'La solicitud de inicio de sesión fue cancelada.';
+    case 'auth/account-exists-with-different-credential':
+      return 'Ya existe una cuenta con este correo electrónico pero con otro método de inicio de sesión.';
+    
+    // Default error
+    default:
+      return 'Ocurrió un error durante la autenticación. Por favor, inténtalo de nuevo.';
+  }
+};
+
 export { 
   auth, 
   signInWithGoogle, 
@@ -84,5 +141,7 @@ export {
   logoutUser,
   onAuthStateChanged,
   storage,
-  googleProvider
+  googleProvider,
+  getAuthErrorMessage,
+  updateProfile
 };

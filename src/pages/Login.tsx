@@ -9,27 +9,32 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, EyeIcon, EyeOffIcon } from "lucide-react";
 
 type LoginProps = {
   onClose?: () => void;
   onSwitchToRegister?: () => void;
 };
 
-// Validation schema
+// Enhanced validation schema with better error messages
 const loginSchema = z.object({
-  email: z.string().email({ message: "Email inválido" }),
-  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
+  email: z.string()
+    .min(1, { message: "El correo electrónico es obligatorio" })
+    .email({ message: "Por favor, ingresa un correo electrónico válido" }),
+  password: z.string()
+    .min(1, { message: "La contraseña es obligatoria" })
+    .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
 });
 
 const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const isModal = !!onClose;
 
-  // Form setup
+  // Form setup with better validation
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -68,6 +73,10 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -152,13 +161,26 @@ const Login = ({ onClose, onSwitchToRegister }: LoginProps = {}) => {
                   <FormItem>
                     <FormLabel>Contraseña</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="********" 
-                        type="password" 
-                        {...field} 
-                        autoComplete="current-password"
-                        disabled={isLoading}
-                      />
+                      <div className="relative">
+                        <Input 
+                          placeholder="********" 
+                          type={showPassword ? "text" : "password"}
+                          {...field} 
+                          autoComplete="current-password"
+                          disabled={isLoading}
+                        />
+                        <button 
+                          type="button"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                          onClick={togglePasswordVisibility}
+                          tabIndex={-1}
+                        >
+                          {showPassword ? 
+                            <EyeOffIcon className="h-4 w-4" /> : 
+                            <EyeIcon className="h-4 w-4" />
+                          }
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -6,7 +6,9 @@ import {
   registerWithEmailAndPassword, 
   loginWithEmailAndPassword,
   logoutUser,
-  onAuthStateChanged
+  onAuthStateChanged,
+  getAuthErrorMessage,
+  updateProfile
 } from '@/firebase/firebase';
 import { User as FirebaseUser } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +28,7 @@ interface AuthContextType {
   loginWithGoogle: () => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  updateUserProfile: (name: string, photoURL?: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,6 +51,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
         
         setUser(userData);
+        
+        // Show welcome toast when user logs in
+        toast({
+          title: "¡Bienvenido de nuevo!",
+          description: `Hola, ${userData.name}`,
+        });
       } else {
         // User is signed out
         setUser(null);
@@ -57,27 +66,66 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Cleanup subscription
     return () => unsubscribe();
-  }, []);
+  }, [toast]);
 
-  // Google login
+  // Update user profile
+  const updateUserProfile = async (name: string, photoURL?: string): Promise<boolean> => {
+    try {
+      if (!auth.currentUser) return false;
+      
+      const updateData: { displayName: string; photoURL?: string } = { displayName: name };
+      if (photoURL) updateData.photoURL = photoURL;
+      
+      await updateProfile(auth.currentUser, updateData);
+      
+      // Update local user state
+      setUser(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          name,
+          ...(photoURL ? { photoURL } : {})
+        };
+      });
+      
+      toast({
+        title: "Perfil actualizado",
+        description: "Tu información de perfil ha sido actualizada correctamente",
+      });
+      
+      return true;
+    } catch (error: any) {
+      console.error("Error updating profile:", error);
+      
+      toast({
+        title: "Error al actualizar el perfil",
+        description: "No se pudo actualizar tu información de perfil",
+        variant: "destructive",
+      });
+      
+      return false;
+    }
+  };
+
+  // Google login with improved error handling
   const loginWithGoogleHandler = async (): Promise<boolean> => {
     try {
       setIsLoading(true);
       const result = await signInWithGoogle();
       const firebaseUser = result.user;
       
-      toast({
-        title: "Inicio de sesión exitoso",
-        description: `Bienvenido, ${firebaseUser.displayName || firebaseUser.email}`,
-      });
-      
+      // Success toast shown by useEffect when auth state changes
       return true;
     } catch (error: any) {
       console.error("Error logging in with Google:", error);
       
+      const errorMessage = error.code 
+        ? getAuthErrorMessage(error.code)
+        : "Hubo un problema al iniciar sesión con Google";
+      
       toast({
         title: "Error de autenticación",
-        description: error.message || "Hubo un problema al iniciar sesión con Google",
+        description: errorMessage,
         variant: "destructive",
       });
       
@@ -87,29 +135,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Email/password login
+  // Email/password login with improved error handling
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
       await loginWithEmailAndPassword(email, password);
       
-      toast({
-        title: "Inicio de sesión exitoso",
-        description: "Has iniciado sesión correctamente",
-      });
-      
+      // Success toast shown by useEffect when auth state changes
       return true;
     } catch (error: any) {
       console.error("Error logging in:", error);
       
-      let errorMessage = "Hubo un problema al iniciar sesión";
-      if (error.code === "auth/invalid-credential") {
-        errorMessage = "Credenciales inválidas. Verifica tu email y contraseña.";
-      } else if (error.code === "auth/user-not-found") {
-        errorMessage = "Usuario no encontrado";
-      } else if (error.code === "auth/wrong-password") {
-        errorMessage = "Contraseña incorrecta";
-      }
+      const errorMessage = error.code 
+        ? getAuthErrorMessage(error.code) 
+        : "Hubo un problema al iniciar sesión";
       
       toast({
         title: "Error de inicio de sesión",
@@ -123,27 +162,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Email/password registration
+  // Email/password registration with improved error handling and user profile setup
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
-      const userCredential = await registerWithEmailAndPassword(email, password);
+      await registerWithEmailAndPassword(email, password, name);
       
-      toast({
-        title: "Registro exitoso",
-        description: "Tu cuenta ha sido creada correctamente",
-      });
-      
+      // Success toast shown by useEffect when auth state changes
       return true;
     } catch (error: any) {
       console.error("Error registering:", error);
       
-      let errorMessage = "Hubo un problema al registrar tu cuenta";
-      if (error.code === "auth/email-already-in-use") {
-        errorMessage = "Este email ya está en uso";
-      } else if (error.code === "auth/weak-password") {
-        errorMessage = "La contraseña es demasiado débil";
-      }
+      const errorMessage = error.code 
+        ? getAuthErrorMessage(error.code) 
+        : "Hubo un problema al registrar tu cuenta";
       
       toast({
         title: "Error de registro",
@@ -157,7 +189,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Logout
+  // Logout with improved handling
   const logout = async (): Promise<void> => {
     try {
       setIsLoading(true);
@@ -190,6 +222,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loginWithGoogle: loginWithGoogleHandler,
         register,
         logout,
+        updateUserProfile,
       }}
     >
       {children}
